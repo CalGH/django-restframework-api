@@ -1,0 +1,66 @@
+'''
+Example queries
+
+Querying a through table for data and converting to dictionary
+
+from rest_framework.renderers import JSONRenderer
+from TicketApp.models import *
+from TicketApp.serializers import *
+
+e = Event.objects.get(pk=2)
+g = Genre.objects.get(pk=1)
+
+myeg = EventGenre.objects.get(event=e, genre=g)
+myegs = EventGenreSerializer(myeg)
+
+event_genre_dictionary_data = myegs.data
+for key, value in event_genre_dictionary_data.items():
+    print(value)
+
+event = event_genre_dictionary_data["event"]
+jsonobj = JSONRenderer().render(event)
+
+'''
+
+'''
+Example of serializing data - from model to native python data types and forming a response with it
+
+model = User(username = "admin", password = "admin", email = "admin@admin.net") - creating a new model instance
+or
+foundUser = User.objects.get(username="Jason") - when getting model instance/ a row from database query
+serializer = UserSerializer(foundUser)
+
+jsonobj = JSONRenderer().render(serializer.data) - serializer.data is of type rest_framework.utils.serializer_helpers.ReturnDict | a dictionary
+
+to respond with the data as json
+
+return JsonResponse(serializer.data, safe=False)
+
+------------
+
+Examples of serializing mutliple models - from model to native python data types and forming a response with it
+
+from django.db.models import Q
+
+allusers = User.objects.all()
+or
+filteredUsers = User.objects.filter(Q(id__gte=2))
+
+serializer = UserSerializer(filteredUsers, many=True)
+
+jsonobj = JSONRenderer().render(serializer.data)
+
+------------
+
+Example of deserializing data - from native python data types to db model and into database
+
+buffer = io.BytesIO(content) - content would be request body
+mydata = JSONParser().parse(buffer) - mydata is a dictionary
+serializer = UserSerializer(data=mydata)
+serializer.is_valid()
+
+in case of error : return JsonResponse(serializer.errors, status=400)
+
+serializer.save() - save to database will fail if data not valid according to serializer validators, automatically figures out if insert or update is needed
+
+'''
