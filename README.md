@@ -1,3 +1,4 @@
-## Reference for working with djangorestframework serialzers and models
+# Django API
+*Reference for working with djangorestframework serialzers and models*
+## Old Project
 
-* Contains a working REST api without authentication
